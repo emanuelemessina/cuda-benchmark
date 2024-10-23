@@ -1,5 +1,5 @@
 # Target executable name:
-EXE = run_test
+EXE = cuda-benchmark
 
 ##########################################################
 ## USER SPECIFIC DIRECTORIES ##
@@ -68,9 +68,6 @@ SRC_DIR = src
 # Include header file diretory:
 INC_DIR = include
 
-# External build dependecies dir
-EXT_DIR = external
-
 # Build directory:
 BUILD_DIR = build
 
@@ -87,7 +84,6 @@ TARGET_DIR = ${BUILD_DIR}/${CONFIG}
 # Include files
 
 CPP_INC_FILES := $(shell find $(INC_DIR) -name '*.h')
-CPP_INC_FILES += $(shell find $(EXT_DIR) -name '*.h')
 
 CU_INC_FILES := $(shell find $(INC_DIR) -name '*.cuh')
 
@@ -96,7 +92,6 @@ INC_FILES := $(CPP_INC_FILES) $(CU_INC_FILES)
 # Source files:
 
 CPP_SRC_FILES := $(shell find $(SRC_DIR) -name '*.cpp')
-CPP_SRC_FILES += $(shell find $(EXT_DIR) -name '*.cpp')
 
 CU_SRC_FILES := $(shell find $(SRC_DIR) -name '*.cu')
 
@@ -136,7 +131,7 @@ ${TARGET_DIR}/$(EXE) : $(OBJS) | $(TARGET_DIR)
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp $(INC_FILES) | $(OBJ_DIR)
 	@mkdir -p $(@D)
 	@echo "Compiling source $@"
-	$(CC) $(CC_FLAGS) -I${INC_DIR} -I${EXT_DIR} -c $< -o $@
+	$(CC) $(CC_FLAGS) -I${INC_DIR} -c $< -o $@
 	@echo "\n"
 
 # Compile CUDA source files to object files:
