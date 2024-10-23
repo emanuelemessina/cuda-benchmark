@@ -1,0 +1,35 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug with GDB",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/debug/run_test", // Path to your target executable
+            "args": [
+                "-v",
+                "-d",
+                "gpu",
+                "-b",
+                "101"
+            ], // Arguments to pass to your program if needed
+            "stopAtEntry": false, // If true, the debugger will stop at the program entry
+            "cwd": "${workspaceFolder}/build/debug", // Set the current working directory
+            "environment": [],
+            "externalConsole": false, // If true, a separate console window will open
+            "MIMode": "gdb", // Use GDB as the debugger
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                }
+            ],
+            "preLaunchTask": "Build with make (debug)", // Pre-launch task: builds the project in debug mode
+            "miDebuggerPath": "/usr/bin/gdb", // Path to GDB (modify if necessary)
+            "logging": {
+                "exceptions": true // Enable logging of exceptions
+            },
+            "internalConsoleOptions": "openOnSessionStart", // Open the integrated terminal at start
+        }
+    ]
+}
