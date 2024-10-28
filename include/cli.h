@@ -29,8 +29,9 @@ class Option
 {
     std::string shortName; ///< Short name for the option (e.g., '-o').
     std::string longName;  ///< Long name for the option (e.g., '--option').
-    option_value value;    ///< Value of the option.
-    bool set = false;
+    option_value value;
+    std::string description;
+    bool set;
 
   public:
     /**
@@ -41,8 +42,8 @@ class Option
      * @param defaultValue Default value for the option.
      */
     template <ValidOptionType T>
-    Option(const std::string&& shortName, const std::string&& longName, T&& defaultValue)
-        : shortName(shortName), longName(longName), value(defaultValue), set(false) {}
+    Option(const std::string&& shortName, const std::string&& longName, T&& defaultValue, const std::string&& description = "")
+        : shortName(shortName), longName(longName), value(defaultValue), description(description), set(false) {}
     /**
      * @brief Sets the value of the option based on the provided string.
      * @param valueStr String representation of the value to set.

@@ -11,82 +11,87 @@ int main(int argc, char* argv[])
 {
     // cli definition
 
-    CLI cli = CLI{"Vector addition and Matrix multiplication tests"};
+    CLI cli = CLI{"CUDA Benchmark"};
 
     cli
-        .option({"v", "vecadd", OPTION_STRING_UNSET})
-        .option({"m", "matmul", OPTION_INT_UNSET})
-        .option({"d", "device", OPTION_STRING_UNSET})
+        .option({"v", "vecadd", OPTION_STRING_UNSET, "Vector addition"})
+        .option({"m", "matmul", OPTION_INT_UNSET, "Matrix multiplication"})
+        .option({"c2g", "color-to-gray", OPTION_STRING_UNSET, "RBG to Grayscale conversion"})
+        .option({"d", "device", OPTION_STRING_UNSET, "gpu|cpu"})
         .option({"b", "blocksize", DEFAULT_BLOCK_SIZE});
 
     cli.parse(argc, argv);
 
     // common options
 
-    Device device = BOTH;
+    std::vector<Device> devices = {CPU, GPU};
     auto deviceOpt = cli.get("device");
     if (deviceOpt.isSet())
     {
-        device = deviceOpt.getValue<std::string>() == "gpu" ? GPU : CPU;
+        devices[0] = deviceOpt.getValue<std::string>() == "gpu" ? GPU : CPU;
+        devices.pop_back();
     }
 
-    auto blocksize = cli.get("blocksize");
-
-    if (device == GPU && blocksize.isSet())
+    if (devices.size() > 1)
     {
-        if (std::find(blockSizes.begin(), blockSizes.end(), blocksize.getValue<int>()) == blockSizes.end())
+        std::cout << "No device selected. Trying both CPU and GPU\n"
+                  << std::endl;
+    }
+
+    int result = 0;
+
+    for (Device device : devices)
+    {
+
+        auto blocksize = cli.get("blocksize");
+
+        if (device == GPU && blocksize.isSet())
         {
-            std::cerr << "Invalid block size option. Use: ";
-            for (int bs : blockSizes)
+            if (std::find(blockSizes.begin(), blockSizes.end(), blocksize.getValue<int>()) == blockSizes.end())
             {
-                std::cout << bs << " ";
+                std::cerr << "Invalid block size option. Use: ";
+                for (int bs : blockSizes)
+                {
+                    std::cout << bs << " ";
+                }
+                std::cout << std::endl;
+                return 1;
             }
-            std::cout << std::endl;
-            return 1;
         }
-    }
 
-    // programs
+        // programs
 
-    auto vecadd = cli.get("vecadd");
+        auto vecadd = cli.get("vecadd");
 
-    if (vecadd.isSet())
-    {
-        auto size = vecadd.getValue<std::string>();
-
-        if (device == BOTH)
+        if (vecadd.isSet())
         {
-            std::cout << "No device selected. Trying both CPU and GPU\n"
-                      << std::endl;
-            int result = programs::vecadd(std::move(size), CPU, blocksize);
-            result |= programs::vecadd(std::move(size), GPU, blocksize);
-            return result;
+            auto size = vecadd.getValue<std::string>();
+            result |= programs::vecadd(std::move(size), device, blocksize);
+            break;
         }
 
-        return programs::vecadd(std::move(size), device, blocksize);
-    }
+        auto matmul = cli.get("matmul");
 
-    auto matmul = cli.get("matmul");
-
-    if (matmul.isSet())
-    {
-        int dim = matmul.getValue<int>();
-
-        if (device == BOTH)
+        if (matmul.isSet())
         {
-            std::cout << "No device selected. Trying both CPU and GPU\n"
-                      << std::endl;
-            int result = programs::matmul(dim, CPU, blocksize);
-            result |= programs::matmul(dim, GPU, blocksize);
-            return result;
+            int dim = matmul.getValue<int>();
+            result |= programs::matmul(dim, device, blocksize);
+            break;
         }
 
-        return programs::matmul(dim, device, blocksize);
+        auto c2g = cli.get("color-to-gray");
+
+        if (c2g.isSet())
+        {
+            std::string q = c2g.getValue<std::string>();
+            result |= programs::color_to_gray(std::move(q), device, blocksize);
+            break;
+        }
+
+        // help
+
+        cli.help();
+
+        return 0;
     }
-
-    // help
-
-    cli.help();
-
-    return 0;
 }

@@ -36,7 +36,7 @@ namespace programs
 
         bool special4046Test = !blocksizeOpt.isSet();
 
-        if (!blocksizeOpt.isSet())
+        if (device == GPU && !blocksizeOpt.isSet())
         {
             std::cout << std::format("No blocksize specified. Default is {}\n", DEFAULT_BLOCK_SIZE)
                       << std::endl;
@@ -53,13 +53,13 @@ namespace programs
 
                 for (int bs : blockSizes)
                 {
-                    operations::matrix_mul(dimension, device, bs);
+                    operations::matmul(dimension, device, bs);
                 }
 
                 continue;
             }
 
-            operations::matrix_mul(dimension, device, blocksize);
+            operations::matmul(dimension, device, blocksize);
         }
 
         return 0;

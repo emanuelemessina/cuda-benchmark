@@ -1,9 +1,6 @@
 # CUDA Benchmark
 
-Measure matrix calculations execution/transfer time between CPU and GPU (CUDA).
-\
-\
-Evaluate the impact of block size on execution time with varying input size and vice versa.
+Measures calculations execution/transfer time for both CPU and GPU (CUDA).
 
 ## Build
 
@@ -11,7 +8,7 @@ Simply build with `make`, no external dependencies apart from the toolchain, see
 
 ## Usage
 
-The options are straightforward but they may keep changing with future updates.
+The options are straightforward but they may change with future updates.
 \
 \
 Run `cuda-benchmark` with no arguments for help.

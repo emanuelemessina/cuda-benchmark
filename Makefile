@@ -77,6 +77,12 @@ OBJ_DIR = ${BUILD_DIR}/obj
 # Target dir
 TARGET_DIR = ${BUILD_DIR}/${CONFIG}
 
+# Res dir
+RES_DIR = res 
+
+# Images dir
+IMAGE_DIR := $(TARGET_DIR)/images
+
 ##########################################################
 ## FILES ##
 ##########################################################
@@ -103,6 +109,10 @@ CU_OBJS := $(patsubst $(SRC_DIR)/%.cu,${OBJ_DIR}/%.cuo,$(CU_SRC_FILES))
 
 OBJS := $(CPP_OBJS) $(CU_OBJS) 
 
+# Resources
+
+PPM_FILES := $(shell find $(RES_DIR) -name '*.ppm')
+
 $(info Includes)
 $(info +    CPP  Headers: $(CPP_INC_FILES))
 $(info +    CUDA Headers: $(CU_INC_FILES))
@@ -112,14 +122,17 @@ $(info +    CUDA: $(CU_SRC_FILES))
 $(info OBJS)
 $(info +    CPP : $(CPP_OBJS))
 $(info +    CUDA: $(CU_OBJS))
+$(info Resources)
+$(info +    PPM: $(PPM_FILES))
 $(info )
+
 
 ##########################################################
 ## PIPELINE ##
 ##########################################################
 
 # Default target to build the executable
-all: $(TARGET_DIR)/$(EXE)
+all: $(TARGET_DIR)/$(EXE) postbuild
 
 # Link c++ and CUDA compiled object files to target executable:
 ${TARGET_DIR}/$(EXE) : $(OBJS) | $(TARGET_DIR)
@@ -149,9 +162,18 @@ $(TARGET_DIR):
 	mkdir -p $@
 	@echo "\n"
 
+$(IMAGE_DIR):
+	@mkdir -p $@
+	@echo "\n"
+
 ##########################################################
 ## COMMANDS ##
 ##########################################################
 
 clean:
 	rm -rf $(BUILD_DIR)
+
+postbuild: $(IMAGE_DIR)
+	@echo "Copying PPM images to $(IMAGE_DIR)..."
+	@mkdir -p $(IMAGE_DIR)
+	@cp $(PPM_FILES) $(IMAGE_DIR)

@@ -50,7 +50,7 @@ namespace programs
 
         bool special10kTest = !blocksizeOpt.isSet();
 
-        if (!blocksizeOpt.isSet())
+        if (device == GPU && !blocksizeOpt.isSet())
         {
             std::cout << std::format("No blocksize specified. Default is {}\n", DEFAULT_BLOCK_SIZE)
                       << std::endl;
@@ -67,13 +67,13 @@ namespace programs
 
                 for (int bs : blockSizes)
                 {
-                    operations::vector_add(size, device, bs);
+                    operations::vecadd(size, device, bs);
                 }
 
                 continue;
             }
 
-            operations::vector_add(size, device, blocksize);
+            operations::vecadd(size, device, blocksize);
         }
 
         return 0;

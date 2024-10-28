@@ -14,7 +14,7 @@ void CLI::help()
               << std::endl;
     for (auto pair : opts)
     {
-        std::cout << "\t-" << pair.second.shortName << ",--" << pair.second.longName << std::endl;
+        std::cout << "\t-" << pair.second.shortName << ", --" << pair.second.longName << "\t" << pair.second.description << std::endl;
     }
 }
 
