@@ -9,9 +9,9 @@
 
 struct pixel
 {
-    char r;
-    char g;
-    char b;
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
 };
 
 class Image
@@ -21,52 +21,52 @@ class Image
     int height = 0;
 
   public:
-    Image(const std::string& filename);
-    Image(int w = 0, int h = 0);
-    virtual ~Image();
+    Image() = default;
+    Image(int w, int h) : width(w), height(h) {}
+    ~Image() = default;
 
     virtual bool load(const std::string& filename) = 0;
     virtual bool save(const std::string& filename) const = 0;
 
-    int getWidth() const;
-    int getHeight() const;
+    int getWidth() const { return width; };
+    int getHeight() const { return height; };
+    int numPixels() const { return width * height; };
 };
 
 class PGMImage : public Image
 {
   protected:
   public:
-    PGMImage(int w = 0, int h = 0);
-    ~PGMImage() override;
+    PGMImage(int w = 0, int h = 0) : Image(w, h)
+    {
+        allocateData();
+    }
+    ~PGMImage() { delete[] data; }
 
     bool load(const std::string& filename) override;
     bool save(const std::string& filename) const override;
 
-    unsigned char** data;
+    unsigned char* data;
 
   private:
-    void skipComments(std::ifstream& file);
-    void allocateData();
-    void deallocateData();
+    void allocateData() { data = new unsigned char[numPixels()]; }
 };
 
 class PPMImage : public Image
 {
   protected:
-    pixel** data = nullptr;
+    pixel* data = nullptr;
 
   public:
     PPMImage(const std::string& filename) { load(filename); }
-    ~PPMImage() override;
+    ~PPMImage() { delete[] data; };
 
     bool load(const std::string& filename) override;
     bool save(const std::string& filename) const override;
-    pixel** getData() { return data; }
+    pixel* getData() { return data; }
 
   private:
-    void skipComments(std::ifstream& file);
-    void allocateData();
-    void deallocateData();
+    void allocateData() { data = new pixel[numPixels()]; }
 };
 
 #endif // IMAGE_H

@@ -73,13 +73,13 @@ if (vecadd.isSet())
     auto size = vecadd.getValue<std::string>();
     // start the program and OR the result
     result |= programs::vecadd(std::move(size), device, blocksize);
-    // finally break out of the loop to switch device
-    break;
+    // finally, continue to switch device
+    continue;
 }
 ...
 ```
 
-It's essential to break otherwise other programs will run if provided, this is not the intended behavior.
+It's essential to continue otherwise other programs will run if provided, this is not the intended behavior.
 
 ## Declare a program
 

@@ -8,8 +8,9 @@
             "program": "${workspaceFolder}/build/debug/cuda-benchmark",
             "args": [
                 "-c2g",
+                "4k",
                 "-b",
-                "101"
+                "128"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build/debug",

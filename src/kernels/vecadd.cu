@@ -15,7 +15,7 @@ __global__ void kernel(const float* a, const float* b, float* c, size_t N)
 namespace cuda
 {
 
-    void vecadd(const float* ha, const float* hb, float* hc, size_t N, size_t threadsPerBlock)
+    void vecadd(const float* ha, const float* hb, float* hc, int N, int threadsPerBlock)
     {
 
         float *da, *db, *dc;

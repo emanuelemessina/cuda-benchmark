@@ -6,20 +6,13 @@
 #include <iostream>
 #include <limits>
 
-Image::Image(int w, int h) : width(w), height(h) {}
-Image::~Image() = default;
-
-int Image::getWidth() const { return width; }
-int Image::getHeight() const { return height; }
-
-PGMImage::PGMImage(int w, int h) : Image(w, h)
+void skipComments(std::ifstream& file)
 {
-    allocateData();
-}
-
-PGMImage::~PGMImage()
-{
-    deallocateData();
+    char c;
+    while ((c = file.peek()) == '#')
+    {
+        file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
 }
 
 bool PGMImage::save(const std::string& filename) const
@@ -35,10 +28,7 @@ bool PGMImage::save(const std::string& filename) const
          << width << " " << height << "\n"
          << MAX_COLOR_DEPTH << "\n";
 
-    for (int i = 0; i < height; ++i)
-    {
-        file.write(reinterpret_cast<const char*>(data[i]), width);
-    }
+    file.write(reinterpret_cast<const char*>(data), numPixels());
 
     return file.good();
 }
@@ -76,44 +66,9 @@ bool PGMImage::load(const std::string& filename)
     file.ignore();
     allocateData();
 
-    for (int i = 0; i < height; ++i)
-    {
-        file.read(reinterpret_cast<char*>(data[i]), width);
-    }
+    file.read(reinterpret_cast<char*>(data), numPixels());
 
     return file.good();
-}
-
-void PGMImage::skipComments(std::ifstream& file)
-{
-    char c;
-    while ((c = file.peek()) == '#')
-    {
-        file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }
-}
-
-void PGMImage::allocateData()
-{
-    data = new unsigned char*[height];
-    for (int i = 0; i < height; ++i)
-    {
-        data[i] = new unsigned char[width];
-    }
-}
-
-void PGMImage::deallocateData()
-{
-    for (int i = 0; i < height; ++i)
-    {
-        delete[] data[i];
-    }
-    delete[] data;
-}
-
-PPMImage::~PPMImage()
-{
-    deallocateData();
 }
 
 bool PPMImage::load(const std::string& filename)
@@ -148,15 +103,7 @@ bool PPMImage::load(const std::string& filename)
     file.ignore();
     allocateData();
 
-    for (int i = 0; i < height; ++i)
-    {
-        for (int j = 0; j < width; ++j)
-        {
-            file.read(&data[i][j].r, 1);
-            file.read(&data[i][j].g, 1);
-            file.read(&data[i][j].b, 1);
-        }
-    }
+    file.read(reinterpret_cast<char*>(data), numPixels() * 3);
 
     return file.good();
 }
@@ -174,42 +121,7 @@ bool PPMImage::save(const std::string& filename) const
          << width << " " << height << "\n"
          << MAX_COLOR_DEPTH << "\n";
 
-    for (int i = 0; i < height; ++i)
-    {
-        for (int j = 0; j < width; ++j)
-        {
-            file.write(&data[i][j].r, 1);
-            file.write(&data[i][j].g, 1);
-            file.write(&data[i][j].b, 1);
-        }
-    }
+    file.write(reinterpret_cast<const char*>(data), numPixels() * 3); // Write the entire data block
 
     return file.good();
-}
-
-void PPMImage::skipComments(std::ifstream& file)
-{
-    char c;
-    while ((c = file.peek()) == '#')
-    {
-        file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }
-}
-
-void PPMImage::allocateData()
-{
-    data = new pixel*[height];
-    for (int i = 0; i < height; ++i)
-    {
-        data[i] = new pixel[width];
-    }
-}
-
-void PPMImage::deallocateData()
-{
-    for (int i = 0; i < height; ++i)
-    {
-        delete[] data[i];
-    }
-    delete[] data;
 }

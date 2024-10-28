@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
         {
             auto size = vecadd.getValue<std::string>();
             result |= programs::vecadd(std::move(size), device, blocksize);
-            break;
+            continue;
         }
 
         auto matmul = cli.get("matmul");
@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
         {
             int dim = matmul.getValue<int>();
             result |= programs::matmul(dim, device, blocksize);
-            break;
+            continue;
         }
 
         auto c2g = cli.get("color-to-gray");
@@ -85,13 +85,12 @@ int main(int argc, char* argv[])
         {
             std::string q = c2g.getValue<std::string>();
             result |= programs::color_to_gray(std::move(q), device, blocksize);
-            break;
+            continue;
         }
 
         // help
 
         cli.help();
-
         return 0;
     }
 }

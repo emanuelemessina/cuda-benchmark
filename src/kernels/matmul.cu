@@ -116,7 +116,7 @@ __global__ void kernel(float* A, float* B, float* C, size_t N)
 namespace cuda
 {
 
-    void matmul(const float* ha, const float* hb, float* hc, size_t N, size_t threadsPerBlock)
+    void matmul(const float* ha, const float* hb, float* hc, int N, int blocksize)
     {
 
         float *da, *db, *dc;
@@ -136,16 +136,16 @@ namespace cuda
         }
 
         // Define block and grid size
-        size_t blockSide = threadsPerBlock / 2;
+        int blockSide = blockSize2Side(blocksize);
         dim3 blockSize(blockSide, blockSide);
-        size_t gridSide = (N + blockSide - 1) / blockSide;
+        int gridSide = (N + blockSide - 1) / blockSide;
         dim3 gridSize(gridSide, gridSide);
 
         {
             ScopedTimer t2("kernel execution", POST);
             size_t sharedMemSize = (blockSide + 1) * blockSide * 2 * sizeof(float);
             kernel<<<gridSize, blockSize, sharedMemSize>>>(da, db, dc, N);
-
+            CUDA_CHECK
             // Wait for GPU to finish before accessing on host
             cudaDeviceSynchronize();
         }

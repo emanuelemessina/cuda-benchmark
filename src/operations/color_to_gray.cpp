@@ -1,23 +1,21 @@
 
 #include "img.h"
+#include "kernels.cuh"
 #include "operations.h"
 #include "timer.h"
 #include <format>
+#include <math.h>
 
 namespace cpu
 {
-    void color_to_gray(PPMImage& colorImage, PGMImage& grayImage, int w, int h)
+    void color_to_gray(PPMImage& colorImage, PGMImage& grayImage)
     {
-        pixel** colorData = colorImage.getData();
+        pixel* colorData = colorImage.getData();
 
-        for (int i = 0; i < h; ++i)
+        for (int i = 0; i < colorImage.numPixels(); ++i)
         {
-            for (int j = 0; j < w; ++j)
-            {
-                pixel& colorPixel = colorData[i][j];
-                grayImage.data[i][j] = static_cast<unsigned char>(
-                    0.299 * colorPixel.r + 0.587 * colorPixel.g + 0.114 * colorPixel.b);
-            }
+            pixel& colorPixel = colorData[i];
+            grayImage.data[i] = static_cast<unsigned char>(std::fminf(255.0f, 0.299 * colorPixel.r + 0.587 * colorPixel.g + 0.114 * colorPixel.b));
         }
     }
 }
@@ -43,13 +41,13 @@ namespace operations
 
         if (device == GPU)
         {
-            ScopedTimer execution(std::format("vecadd | GPU | {} [{}]", quality, blocksize), PRE);
-            // cuda::vecadd(a.data(), b.data(), c.data(), size, gpuThreadsPerBlock);
+            ScopedTimer execution(std::format("color-to-gray | GPU | {} [{}]", quality, blocksize), PRE);
+            cuda::color_to_gray(colorImage, grayImage, blocksize);
         }
         else
         {
-            ScopedTimer execution(std::format("vecadd | CPU | {}", quality), PRE);
-            cpu::color_to_gray(colorImage, grayImage, w, h);
+            ScopedTimer execution(std::format("color-to-gray | CPU | {}", quality), PRE);
+            cpu::color_to_gray(colorImage, grayImage);
         }
 
         filename = std::format("images/{}_", quality);

@@ -10,8 +10,6 @@
         "*.php": "php",
         "*.inix": "ini",
         "*.uidesc": "jsonc",
-        "*.cu": "cpp",
-        "*.cuh": "cpp",
         "array": "cpp",
         "atomic": "cpp",
         "bit": "cpp",

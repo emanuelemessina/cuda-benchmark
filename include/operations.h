@@ -6,7 +6,7 @@
 
 #define DEFAULT_BLOCK_SIZE 32
 
-inline static std::array<int, 9> blockSizes = {32, 64, 128, 256, 512, 1024, 2048, 4096, 8192};
+inline static std::array<int, 6> blockSizes = {32, 64, 128, 256, 512, 1024};
 
 enum Device
 {
