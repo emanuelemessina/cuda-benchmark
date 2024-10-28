@@ -1,5 +1,6 @@
 #include "img.h"
 #include "kernels.cuh"
+#include "pixel.cuh"
 #include "timer.h"
 #include <cmath>
 #include <cuda_runtime.h>
@@ -16,7 +17,7 @@ __global__ void kernel(const pixel* colorData, unsigned char* grayData, int widt
     if (x < width && y < height)
     {
         const pixel& colorPixel = colorData[idx];
-        grayData[idx] = static_cast<unsigned char>(std::fminf(255.0f, 0.299f * colorPixel.r + 0.587f * colorPixel.g + 0.114f * colorPixel.b));
+        grayData[idx] = toGrayscale(colorPixel);
     }
 }
 

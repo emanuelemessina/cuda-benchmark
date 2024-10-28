@@ -144,7 +144,7 @@ ${TARGET_DIR}/$(EXE) : $(OBJS) | $(TARGET_DIR)
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp $(INC_FILES) | $(OBJ_DIR)
 	@mkdir -p $(@D)
 	@echo "Compiling source $@"
-	$(CC) $(CC_FLAGS) -I${INC_DIR} -c $< -o $@
+	$(CC) $(CC_FLAGS) -I${INC_DIR} -I$(CUDA_INC_DIR) -c $< -o $@
 	@echo "\n"
 
 # Compile CUDA source files to object files:

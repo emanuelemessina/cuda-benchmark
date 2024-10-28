@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <math.h>
 #include <string>
 
 #define MAX_COLOR_DEPTH 255

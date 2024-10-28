@@ -2,6 +2,7 @@
 #include "img.h"
 #include "kernels.cuh"
 #include "operations.h"
+#include "pixel.cuh"
 #include "timer.h"
 #include <format>
 #include <math.h>
@@ -14,8 +15,7 @@ namespace cpu
 
         for (int i = 0; i < colorImage.numPixels(); ++i)
         {
-            pixel& colorPixel = colorData[i];
-            grayImage.data[i] = static_cast<unsigned char>(std::fminf(255.0f, 0.299 * colorPixel.r + 0.587 * colorPixel.g + 0.114 * colorPixel.b));
+            grayImage.data[i] = toGrayscale(colorData[i]);
         }
     }
 }
