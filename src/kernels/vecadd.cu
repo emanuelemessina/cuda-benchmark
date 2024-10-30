@@ -40,7 +40,7 @@ namespace cuda
             ScopedTimer t2("kernel execution", POST);
 
             kernel<<<gridSize, blockSize>>>(da, db, dc, N);
-
+            CUDA_CHECK
             // Wait for GPU to finish before accessing on host
             cudaDeviceSynchronize();
         }

@@ -142,8 +142,8 @@ namespace cuda
         dim3 gridSize(gridSide, gridSide);
 
         {
-            ScopedTimer t2("kernel execution", POST);
             size_t sharedMemSize = (blockSide + 1) * blockSide * 2 * sizeof(float);
+            ScopedTimer t2("kernel execution", POST);
             kernel<<<gridSize, blockSize, sharedMemSize>>>(da, db, dc, N);
             CUDA_CHECK
             // Wait for GPU to finish before accessing on host
