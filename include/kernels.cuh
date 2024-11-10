@@ -37,4 +37,6 @@ namespace cuda
     void matmul(const float* ha, const float* hb, float* hc, int N, int blocksize);
 
     void color_to_gray(PPMImage& colorImage, PGMImage& grayImage, int blocksize);
+
+    void stencil_1d(const int* in, int* out, int N, int radius, int blockSize);
 };

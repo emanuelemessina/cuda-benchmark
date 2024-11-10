@@ -16,7 +16,8 @@ enum Device
 
 namespace operations
 {
-    void vecadd(size_t size, Device device, size_t gpuThreadsPerBlock);
-    void matmul(size_t size, Device device, size_t gpuThreadsPerBlock);
+    void vecadd(int size, Device device, int gpuThreadsPerBlock);
+    void matmul(int size, Device device, int gpuThreadsPerBlock);
     void color_to_gray(const std::string& quality, Device device, int blocksize);
+    void stencil_1d(int radius, Device device, int blocksize);
 }

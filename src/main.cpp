@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <ranges>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -17,6 +18,7 @@ int main(int argc, char* argv[])
         .option({"v", "vecadd", OPTION_STRING_UNSET, "Vector addition"})
         .option({"m", "matmul", OPTION_INT_UNSET, "Matrix multiplication"})
         .option({"c2g", "color-to-gray", OPTION_STRING_UNSET, "RBG to Grayscale conversion"})
+        .option({"s1d", "stencil-1d", 3, "Stencil 1D"})
         .option({"d", "device", OPTION_STRING_UNSET, "gpu|cpu"})
         .option({"b", "blocksize", DEFAULT_BLOCK_SIZE});
 
@@ -85,6 +87,15 @@ int main(int argc, char* argv[])
         {
             std::string q = c2g.getValue<std::string>();
             result |= programs::color_to_gray(std::move(q), device, blocksize);
+            continue;
+        }
+
+        auto stencil_1d = cli.get("stencil-1d");
+
+        if (stencil_1d.isSet())
+        {
+            int radius = stencil_1d.getValue<int>();
+            result |= programs::stencil_1d(radius, device, blocksize);
             continue;
         }
 

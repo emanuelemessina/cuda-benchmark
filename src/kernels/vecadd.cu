@@ -49,7 +49,7 @@ namespace cuda
             ScopedTimer t3("memcpy output GPU -> CPU", POST);
 
             // Copy result vector c from device to host
-            cudaMemcpy(hc, dc, N * sizeof(int), cudaMemcpyDeviceToHost);
+            cudaMemcpy(hc, dc, N * sizeof(float), cudaMemcpyDeviceToHost);
         }
 
         // Free the allocated memory on the device

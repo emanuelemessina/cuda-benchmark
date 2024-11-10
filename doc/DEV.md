@@ -141,3 +141,15 @@ Example
 ```
 
 The actual device algorithm should be declared, for consistency, inside the respective cpu of cuda namespace.
+
+## CUDA operation
+
+Time memory transfers and kernel execution.
+\
+\
+Check the kernel execution:
+```c++
+kernel<<<gridSize, blockSize>>>(da, db, dc, N);
+CUDA_CHECK
+cudaDeviceSynchronize();
+```

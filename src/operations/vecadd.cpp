@@ -7,7 +7,7 @@
 
 namespace cpu
 {
-    void vecadd(const std::vector<float>& a, const std::vector<float>& b, std::vector<float>& c, size_t size)
+    void vecadd(const std::vector<float>& a, const std::vector<float>& b, std::vector<float>& c, int size)
     {
         for (size_t i = 0; i < size; ++i)
         {
@@ -21,9 +21,9 @@ namespace cpu
 
 namespace operations
 {
-    void vecadd(size_t size, Device device, size_t gpuThreadsPerBlock = 256)
+    void vecadd(int size, Device device, int gpuThreadsPerBlock = 256)
     {
-        const std::vector<float> a = generate_random_vector(size), b = generate_random_vector(size);
+        const std::vector<float> a = generate::random_vector(size), b = generate::random_vector(size);
         std::vector<float> c(size);
 
         if (device == GPU)

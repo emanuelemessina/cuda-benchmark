@@ -11,9 +11,9 @@
 namespace cpu
 {
     void matmul(const std::vector<float>& a,
-                    const std::vector<float>& b,
-                    std::vector<float>& c,
-                    size_t size)
+                const std::vector<float>& b,
+                std::vector<float>& c,
+                size_t size)
     {
         for (int i = 0; i < size; ++i)
         {
@@ -65,9 +65,9 @@ void printMatrix(float* matrix, int rows, int cols)
 
 namespace operations
 {
-    void matmul(size_t size, Device device, size_t gpuThreadsPerBlock)
+    void matmul(int size, Device device, int gpuThreadsPerBlock)
     {
-        const std::vector<float> a = generate_random_flat_matrix(size, size), b = generate_random_flat_matrix(size, size);
+        const std::vector<float> a = generate::random_flat_matrix(size, size), b = generate::random_flat_matrix(size, size);
         std::vector<float> c(size * size);
 
         if (device == GPU)
