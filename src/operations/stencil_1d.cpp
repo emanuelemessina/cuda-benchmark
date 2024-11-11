@@ -30,9 +30,8 @@ namespace cpu
 
 namespace operations
 {
-    void stencil_1d(int radius, Device device, int blocksize)
+    void stencil_1d(int N, int radius, Device device, int blocksize)
     {
-        int N = 4096;
         const auto in = generate::ones_vector(N);
         auto out = generate::zero_vector(N);
 

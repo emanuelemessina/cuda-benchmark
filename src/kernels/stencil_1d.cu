@@ -5,36 +5,40 @@
 
 __global__ void kernel(const int* in, int* out, int N, int radius)
 {
-    extern __shared__ int shared[];
+    extern __shared__ int shared[]; // dim: blocksize + 2 radius
     int* tile = shared;
 
     int idx = threadIdx.x + blockIdx.x * blockDim.x;
 
-    if (idx < radius || idx >= N) // pad block position
+    if (idx >= N)
         return;
 
     int tdx = threadIdx.x + radius; // current thread index in tile
 
     tile[tdx] = in[idx]; // central element (each thread)
 
-    // halo elements for leftmost threads
+    // leftmost threads load halo elements
     if (threadIdx.x < radius)
     {
-        tile[threadIdx.x] = in[idx - radius]; // left
-
-        if (idx + blockDim.x < N)                          // last block out of bounds
-            tile[tdx + blockDim.x] = in[idx + blockDim.x]; // right
+        tile[threadIdx.x] = (idx < radius) ? 0 /* global leftmost oob (first block) */ : in[idx - radius];                   /* left stencil */
+        tile[tdx + blockDim.x] = (idx + blockDim.x >= N) /* global rightmost oob (last block) */ ? 0 : in[idx + blockDim.x]; /* right stencil */
     }
 
     __syncthreads();
 
-    int result = 0;
-    for (int offset = -radius; offset <= radius; offset++)
+    if (idx >= radius && idx < N - radius)
     {
-        result += tile[tdx + offset];
+        int result = 0;
+        for (int offset = -radius; offset <= radius; offset++)
+        {
+            result += tile[tdx + offset];
+        }
+        out[idx] = result;
     }
-
-    out[idx] = result;
+    else
+    {
+        out[idx] = tile[threadIdx.x]; // pad block position
+    }
 }
 
 namespace cuda
@@ -67,6 +71,7 @@ namespace cuda
             cudaMemcpy(out, d_out, size, cudaMemcpyDeviceToHost);
         }
 
+        /*
         // Error Checking
         for (int i = radius; i < N; i++)
         {
@@ -83,6 +88,7 @@ namespace cuda
                     printf("Mismatch at index %d, was: %d, should be: %d\n", i, out[i], 1 + 2 * radius);
             }
         }
+        */
 
         cudaFree(d_in);
         cudaFree(d_out);

@@ -8,7 +8,7 @@
             "program": "${workspaceFolder}/build/debug/cuda-benchmark",
             "args": [
                 "-s1d",
-                "3"
+                "30000"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build/debug",
