@@ -39,4 +39,7 @@ namespace cuda
     void color_to_gray(PPMImage& colorImage, PGMImage& grayImage, int blocksize);
 
     void stencil_1d(const int* in, int* out, int N, int radius, int blockSize);
+
+    void conv_1d_global(const float* F, const float* K, float* C, int N, int k, int blockSize);
+    void conv_1d_shared(const float* F, const float* K, float* C, int N, int k, int blockSize);
 };

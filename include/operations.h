@@ -20,4 +20,5 @@ namespace operations
     void matmul(int size, Device device, int gpuThreadsPerBlock);
     void color_to_gray(const std::string& quality, Device device, int blocksize);
     void stencil_1d(int size, int radius, Device device, int blocksize);
+    void conv_1d(int size, int kernel, Device device, int blocksize);
 }

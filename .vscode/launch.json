@@ -7,8 +7,10 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/debug/cuda-benchmark",
             "args": [
-                "-s1d",
-                "30000"
+                "-c1d",
+                "30000",
+                "-k",
+                "20"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build/debug",

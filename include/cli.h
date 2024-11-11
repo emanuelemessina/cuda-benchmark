@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <array>
 #include <concepts>
+#include <format>
 #include <iostream>
 #include <optional>
 #include <string>
@@ -98,3 +99,17 @@ class CLI
     std::string description;
     options opts;
 };
+
+inline void clamp_int_argument(int& arg, int min, int max)
+{
+    if (arg < min)
+    {
+        std::cout << std::format("Using min size {}\n", min) << std::endl;
+        arg = min;
+    }
+    else if (arg > max)
+    {
+        std::cout << std::format("Capping to max size {}\n", max) << std::endl;
+        arg = max;
+    }
+}

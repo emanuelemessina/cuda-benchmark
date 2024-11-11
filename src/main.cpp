@@ -18,7 +18,9 @@ int main(int argc, char* argv[])
         .option({"v", "vecadd", OPTION_STRING_UNSET, "Vector addition"})
         .option({"m", "matmul", OPTION_INT_UNSET, "Matrix multiplication"})
         .option({"c2g", "color-to-gray", OPTION_STRING_UNSET, "RBG to Grayscale conversion"})
-        .option({"s1d", "stencil-1d", 3, "Stencil 1D"})
+        .option({"s1d", "stencil-1d", OPTION_INT_UNSET, "Stencil 1D"})
+        .option({"c1d", "conv-1d", OPTION_INT_UNSET, "Convolution 1D"})
+        .option({"k", "kernel", 3, "Kernel/radius size (if applicable)"})
         .option({"d", "device", OPTION_STRING_UNSET, "gpu|cpu"})
         .option({"b", "blocksize", DEFAULT_BLOCK_SIZE});
 
@@ -90,12 +92,23 @@ int main(int argc, char* argv[])
             continue;
         }
 
+        auto kernel = cli.get("kernel").getValue<int>();
+
         auto stencil_1d = cli.get("stencil-1d");
 
         if (stencil_1d.isSet())
         {
-            int radius = stencil_1d.getValue<int>();
-            result |= programs::stencil_1d(radius, device, blocksize);
+            int size = stencil_1d.getValue<int>();
+            result |= programs::stencil_1d(size, kernel, device, blocksize);
+            continue;
+        }
+
+        auto conv_1d = cli.get("conv-1d");
+
+        if (conv_1d.isSet())
+        {
+            int size = conv_1d.getValue<int>();
+            result |= programs::conv_1d(size, kernel, device, blocksize);
             continue;
         }
 

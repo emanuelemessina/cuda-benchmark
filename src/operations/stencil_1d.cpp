@@ -7,19 +7,25 @@
 
 namespace cpu
 {
-    void stencil_1d(const std::vector<int>& in, std::vector<int>& out, int radius)
+    void stencil_1d(const std::vector<int>& in, std::vector<int>& out, int size, int radius)
     {
-        int size = in.size();
         for (int i = radius; i < size - radius; ++i)
         {
-            for (int j = -radius; j <= radius; j++)
+            if (i >= radius && i < size - radius)
             {
-                int idx = i + j;
-                if (idx < 0)
-                    continue;
-                if (idx >= size)
-                    break;
-                out[i] += in[i + j];
+                for (int j = -radius; j <= radius; j++)
+                {
+                    int idx = i + j;
+                    if (idx < 0)
+                        continue;
+                    if (idx >= size)
+                        break;
+                    out[i] += in[i + j];
+                }
+            }
+            else
+            {
+                out[i] = in[i];
             }
         }
     }
@@ -33,7 +39,7 @@ namespace operations
     void stencil_1d(int N, int radius, Device device, int blocksize)
     {
         const auto in = generate::ones_vector(N);
-        auto out = generate::zero_vector(N);
+        auto out = std::vector<int>(N);
 
         if (device == GPU)
         {
@@ -43,7 +49,7 @@ namespace operations
         else
         {
             ScopedTimer execution(std::format("stencil-1d | CPU | {} : {}", N, radius), PRE);
-            cpu::stencil_1d(in, out, radius);
+            cpu::stencil_1d(in, out, N, radius);
         }
     }
 }
